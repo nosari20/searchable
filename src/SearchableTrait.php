@@ -1,4 +1,5 @@
-<?php namespace Nicolaslopezj\Searchable;
+<?php
+namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Expression;
@@ -8,7 +9,6 @@ use Illuminate\Support\Str;
 
 /**
  * Trait SearchableTrait
- * @package Nicolaslopezj\Searchable
  * @property array $searchable
  * @property string $table
  * @property string $primaryKey
@@ -31,12 +31,12 @@ trait SearchableTrait
      * @param  boolean $entireTextOnly
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSearch(Builder $q, $search, $threshold = null, $entireText = false, $entireTextOnly = false)
+    public function scopeSearch(Builder $q, $search, $separarator = '+', $threshold = null, $entireText = false, $entireTextOnly = false)
     {
-        return $this->scopeSearchRestricted($q, $search, null, $threshold, $entireText, $entireTextOnly);
+        return $this->scopeSearchRestricted($q, $search, $separarator, null, $threshold, $entireText, $entireTextOnly);
     }
 
-    public function scopeSearchRestricted(Builder $q, $search, $restriction, $threshold = null, $entireText = false, $entireTextOnly = false)
+    public function scopeSearchRestricted(Builder $q, $search, $separarator, $restriction, $threshold = null, $entireText = false, $entireTextOnly = false)
     {
         $query = clone $q;
         $query->select($this->getTable() . '.*');
@@ -48,7 +48,7 @@ trait SearchableTrait
         }
 
         $search = mb_strtolower(trim($search));
-        $words = explode(' ', $search);
+        $words = explode($separarator, $search);
 
         $selects = [];
         $this->search_bindings = [];
